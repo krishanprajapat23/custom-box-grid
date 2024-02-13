@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Custom Box</title>
+    <style>
+        :root {
+            --dark: #121212;
+            --hover_clr: #888;
+            --borderColor: var(--dark);
+            --white: #fff;
+            --red: #ff2134;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 1rem;
+            width: 960px;
+            margin: 0 auto;
+            font-size: 14px;
+            font-family: sans-serif;
+            font-weight: 400;
+            color: var(--dark);
+            background: var(--white);
+        }
+
+        .box-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+            padding: 5px;
+        }
+
+        .box-wrapper.active {
+            border: 2px solid var(--borderColor);
+        }
+
+        ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .box-wrapper>ul li {
+            width: 60px;
+            height: 60px;
+            background-color: var(--dark);
+        }
+
+        .box-wrapper>ul li:hover {
+            width: 60px;
+            height: 60px;
+            background-color: var(--hover_clr);
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--dark);
+            background-color: var(--white);
+            background-clip: padding-box;
+            border: 1px solid var(--borderColor);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border-radius: 0.25rem;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+            outline: none;
+        }
+
+        .form-control.error {
+            color: var(--red);
+            border-color: var(--red);
+        }
+
+        .form-wrapper {
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .warningMsg {
+            color: var(--red);
+            font-weight: bold;
+            font-size: 13px;
+            display: none;
+            margin: 0.5rem 0;
+        }
+
+        .warningMsg.on {
+            display: block;
+        }
+        h1{
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="form-wrapper">
+        <h1>Create Custom Number of Boxes</h1>
+        <div class="input-wrapper">
+            <input class="form-control" id="valueBox" type="text" placeholder="Enter Box Value...">
+            <div class="warningMsg"></div>
+        </div>
+    </section>
+    <section id="wrapperBox" class="box-wrapper"></section>
+    <script>
+        let wrapperBox = document.querySelector("#wrapperBox");
+        let valueInput = document.querySelector("#valueBox");
+        let warningMessage = document.querySelector('.warningMsg');
+
+        // run the input value according boxes
+
+        valueInput.addEventListener('input', function (e) {
+            if (valueInput.value && valueInput.value <= 100) {
+                warningMessage.classList.remove('on');
+                valueInput.classList.remove('error');
+                createDiv(parseInt(valueInput.value));
+                hoverFire();
+            } else {
+                warningMessage.classList.add('on');
+                valueInput.classList.add('error');
+                warningMessage.textContent = `You have entered ${valueInput.value}, It should be less than 100`
+                createDiv(0);
+            }
+        });
+
+        // fn to create the boxes
+        function createDiv(val) {
+            wrapperBox.innerHTML = "";
+            let parent;
+            for (let i = 1; i <= val; i++) {
+                parent = document.createElement("ul");
+
+                for (let j = 1; j <= val; j++) {
+                    let li = document.createElement("li");
+                    parent.appendChild(li);
+                }
+                wrapperBox.appendChild(parent);
+            }
+            return parent;
+        }
+
+        // run hover color when mouse enters to the box
+        function hoverFire() {
+            let list = document.querySelectorAll("li");
+            if (list.length > 0) {
+                list.forEach((liItem, i) => {
+                    liItem.addEventListener("mouseover", function () {
+                        console.log(this)
+                        this.style.setProperty('--hover_clr', randomColor());
+                        // wrapperBox.style.setProperty("border-color", randomColor());
+                    })
+                });
+            }
+        }
+
+        // fn to hover color random on each boxes
+        function randomColor() {
+            let color = [];
+            for (let i = 0; i < 3; i++) {
+                color.push(Math.floor(Math.random() * 256));
+            }
+            return 'rgb(' + color.join(', ') + ')';
+        }
+
+    </script>
+</body>
+
+</html>
